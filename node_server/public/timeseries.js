@@ -3,7 +3,7 @@
     "use strict";
 
     var URL = "http://taivoapp.mybluemix.net/recent/?n=1";
-    //var URL = "http://localhost:3000/recent/?n=1";
+    var URL = "http://localhost:3000/recent/?n=1";
     var INTERVAL = 1000;
 
     D3ts.defaults = {};
@@ -52,7 +52,7 @@
             .domain(o.domain.y)
             .range(o.range.y);
 
-        // line generator
+        // Line generator.
         this.line = d3.svg.line()
             .x(function(d, i) { return x(i); })
             .y(function(d, i) { return y(d); });
@@ -75,7 +75,7 @@
         margin = this.margin;
 
 
-        // Create the SVG and place it in the middle
+        // Create the SVG and place it in the middle.
         this.svg.attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -83,20 +83,23 @@
                   "translate(" + margin.left + "," + margin.top + ")");
 
 
-        // Line does not go out the axis
+        // Line does not go out the axis.
         this.svg.append("defs").append("clipPath")
             .attr("id", "clip")
             .append("rect")
             .attr("width", width)
             .attr("height", height);
 
-        // X axis
+        // X axis.
         this.svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.svg.axis().scale(x).orient("bottom"));
+            .call(d3.svg.axis()
+                  .scale(x)
+                  .orient("bottom")
+                  .tickFormat(""));
 
-        // Y axis
+        // Y axis.
         this.svg.append("g")
             .attr("class", "y axis")
             .call(d3.svg.axis()
@@ -128,17 +131,18 @@
 
         x = this.x;
 
-        // push a new data point onto the back
+        // Add a new data point and zero value
+        // to create the mountain effect.
         this.data.push(value);
         this.data.push(0);
 
-        // redraw the line, and slide it to the left
+        // Redraw the line and slides.
         this.path
             .attr("d", this.line)
             .attr("transform", null);
 
         
-        // pop the old data point off the front
+        // Remove excess data points.
         if (this.data.length > this.n) {
 
             this.path
