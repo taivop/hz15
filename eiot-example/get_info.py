@@ -5,7 +5,7 @@ from socket import error as socket_error
 #import getopt
 #import errno
 
-usbip_server = '10.0.1.1'
+usbip_server = '10.0.4.1'
 
 # Function for printing out the device vlaues
 def print_value(title_primary, value_primary, title_secondary='', value_secondary=''):
@@ -24,7 +24,7 @@ def main():
         print('ERROR: Unable to connect to ' + usbip_server)
         return serr.errno
 
-    #print(devices)
+    print(devices)
 
     for device in devices:
         #if device is None:

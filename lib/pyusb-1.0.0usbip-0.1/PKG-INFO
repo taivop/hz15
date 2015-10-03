@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: pyusb
-Version: 1.0.0b2
+Version: 1.0.0usbip-0.1
 Summary: Python USB access module
 Home-page: http://pyusb.sourceforge.net
 Author: Wander Lairson Costa

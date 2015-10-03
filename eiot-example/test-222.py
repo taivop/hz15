@@ -1,7 +1,7 @@
 import os
 import usb.core
 
-usbip_server = "10.0.1.1"
+usbip_server = "10.0.4.1"
 
 
 def normalize(value):

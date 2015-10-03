@@ -1,4 +1,4 @@
-# Copyright (C) 2009-2014 Wander Lairson Costa
+# Copyright (C) 2009-2013 Wander Lairson Costa
 #
 # The following terms apply to all files associated
 # with the software unless explicitly disclaimed in individual files.
@@ -27,6 +27,7 @@
 # MODIFICATIONS.
 
 from ctypes import *
+import ctypes.util
 import usb.util
 import sys
 import logging
@@ -35,7 +36,6 @@ import usb._interop as _interop
 import errno
 import math
 from usb.core import USBError
-import usb.libloader
 
 __author__ = 'Wander Lairson Costa'
 
@@ -94,6 +94,24 @@ LIBUSB_ERROR_INTERRUPTED = -10
 LIBUSB_ERROR_NO_MEM = -11
 LIBUSB_ERROR_NOT_SUPPORTED = -12
 LIBUSB_ERROR_OTHER = -99
+
+# map return codes to strings
+_str_error = {
+    LIBUSB_SUCCESS:'Success (no error)',
+    LIBUSB_ERROR_IO:'Input/output error',
+    LIBUSB_ERROR_INVALID_PARAM:'Invalid parameter',
+    LIBUSB_ERROR_ACCESS:'Access denied (insufficient permissions)',
+    LIBUSB_ERROR_NO_DEVICE:'No such device (it may have been disconnected)',
+    LIBUSB_ERROR_NOT_FOUND:'Entity not found',
+    LIBUSB_ERROR_BUSY:'Resource busy',
+    LIBUSB_ERROR_TIMEOUT:'Operation timed out',
+    LIBUSB_ERROR_OVERFLOW:'Overflow',
+    LIBUSB_ERROR_PIPE:'Pipe error',
+    LIBUSB_ERROR_INTERRUPTED:'System call interrupted (perhaps due to signal)',
+    LIBUSB_ERROR_NO_MEM:'Insufficient memory',
+    LIBUSB_ERROR_NOT_SUPPORTED:'Operation not supported or unimplemented on this platform',
+    LIBUSB_ERROR_OTHER:'Unknown error'
+}
 
 # map return code to errno values
 _libusb_errno = {
@@ -245,22 +263,35 @@ def _get_iso_packet_list(transfer):
 
 _lib = None
 
-def _load_library(find_library=None):
+def _load_library():
+    if sys.platform != 'cygwin':
+        candidates = ('usb-1.0', 'libusb-1.0', 'usb')
+        for candidate in candidates:
+            if sys.platform == 'win32':
+                candidate = candidate + '.dll'
+
+            libname = ctypes.util.find_library(candidate)
+            if libname is not None: break
+    else:
+        # corner cases
+        # cygwin predefines library names with 'cyg' instead of 'lib'
+        try:
+            return CDLL('cygusb-1.0.dll')
+        except Exception:
+            _logger.error('Libusb 1.0 could not be loaded in cygwin', exc_info=True)
+
+        raise OSError('USB library could not be found')
     # Windows backend uses stdcall calling convention
-    #
+    if sys.platform == 'win32':
+        l = WinDLL(libname)
+    else:
+        l = CDLL(libname)
     # On FreeBSD 8/9, libusb 1.0 and libusb 0.1 are in the same shared
     # object libusb.so, so if we found libusb library name, we must assure
     # it is 1.0 version. We just try to get some symbol from 1.0 version
-    if sys.platform == 'win32':
-        win_cls = WinDLL
-    else:
-        win_cls = None
-
-    return usb.libloader.load_locate_library(
-                ('usb-1.0', 'libusb-1.0', 'usb'),
-                'cygusb-1.0.dll', 'Libusb 1',
-                win_cls=win_cls,
-                find_library=find_library, check_symbols=('libusb_init',))
+    if not hasattr(l, 'libusb_init'):
+        raise OSError('USB library could not be found')
+    return l
 
 def _setup_prototypes(lib):
     # void libusb_set_debug (libusb_context *ctx, int level)
@@ -449,13 +480,6 @@ def _setup_prototypes(lib):
     # int libusb_submit_transfer(struct libusb_transfer *transfer);
     lib.libusb_submit_transfer.argtypes = [POINTER(_libusb_transfer)]
 
-    # const char *libusb_strerror(enum libusb_error errcode)
-    lib.libusb_strerror.argtypes = [c_uint]
-    lib.libusb_strerror.restype = c_char_p
-
-    # int libusb_clear_halt(libusb_device_handle *dev, unsigned char endpoint)
-    lib.libusb_clear_halt.argtypes = [_libusb_device_handle, c_ubyte]
-
     # void libusb_set_iso_packet_lengths(
     #               libusb_transfer* transfer,
     #               unsigned int length
@@ -537,21 +561,15 @@ def _setup_prototypes(lib):
     #int libusb_handle_events(libusb_context *ctx);
     lib.libusb_handle_events.argtypes = [c_void_p]
 
-def _strerror(errcode):
-    return _lib.libusb_strerror(errcode).decode('utf8')
-
 # check a libusb function call
-def _check(ret):
-    if hasattr(ret, 'value'):
-        ret = ret.value
-
-    if ret < 0:
-        if ret == LIBUSB_ERROR_NOT_SUPPORTED:
-            raise NotImplementedError(_strerror(ret))
-        else:
-            raise USBError(_strerror(ret), ret, _libusb_errno[ret])
-
-    return ret
+def _check(retval):
+    if isinstance(retval, int):
+        retval = c_int(retval)
+    if isinstance(retval, c_int):
+        if retval.value < 0:
+           ret = retval.value
+           raise USBError(_str_error[ret], ret, _libusb_errno[ret])
+    return retval
 
 # wrap a device
 class _Device(object):
@@ -586,7 +604,7 @@ class _DevIterator(object):
         self.num_devs = _check(_lib.libusb_get_device_list(
                                     ctx,
                                     byref(self.dev_list))
-                                )
+                                ).value
     def __iter__(self):
         for i in range(self.num_devs):
             yield _Device(self.dev_list[i])
@@ -677,7 +695,7 @@ class _LibUSB(usb.backend.IBackend):
         dev_desc.bus = self.lib.libusb_get_bus_number(dev.devid)
         dev_desc.address = self.lib.libusb_get_device_address(dev.devid)
 
-        # Only available in newer versions of libusb
+	#Only available i newer versions of libusb
         try:
             dev_desc.port_number = self.lib.libusb_get_port_number(dev.devid)
         except AttributeError:
@@ -691,10 +709,7 @@ class _LibUSB(usb.backend.IBackend):
         _check(self.lib.libusb_get_config_descriptor(
                 dev.devid,
                 config, byref(cfg)))
-        config_desc = _ConfigDescriptor(cfg)
-        config_desc.extra_descriptors = (
-                config_desc.extra[:config_desc.extra_length])
-        return config_desc
+        return _ConfigDescriptor(cfg)
 
     @methodtrace(_logger)
     def get_interface_descriptor(self, dev, intf, alt, config):
@@ -704,18 +719,14 @@ class _LibUSB(usb.backend.IBackend):
         i = cfg.interface[intf]
         if alt >= i.num_altsetting:
             raise IndexError('Invalid alternate setting index ' + str(alt))
-        intf_desc = i.altsetting[alt]
-        intf_desc.extra_descriptors = intf_desc.extra[:intf_desc.extra_length]
-        return _WrapDescriptor(intf_desc, cfg)
+        return _WrapDescriptor(i.altsetting[alt], cfg)
 
     @methodtrace(_logger)
     def get_endpoint_descriptor(self, dev, ep, intf, alt, config):
         i = self.get_interface_descriptor(dev, intf, alt, config)
         if ep > i.bNumEndpoints:
             raise IndexError('Invalid endpoint index ' + str(ep))
-        ep_desc = i.endpoint[ep]
-        ep_desc.extra_descriptors = ep_desc.extra[:ep_desc.extra_length]
-        return _WrapDescriptor(ep_desc, i)
+        return _WrapDescriptor(i.endpoint[ep], i)
 
     @methodtrace(_logger)
     def open_device(self, dev):
@@ -760,12 +771,12 @@ class _LibUSB(usb.backend.IBackend):
                             timeout)
 
     @methodtrace(_logger)
-    def bulk_read(self, dev_handle, ep, intf, buff, timeout):
+    def bulk_read(self, dev_handle, ep, intf, size, timeout):
         return self.__read(self.lib.libusb_bulk_transfer,
                            dev_handle,
                            ep,
                            intf,
-                           buff,
+                           size,
                            timeout)
 
     @methodtrace(_logger)
@@ -778,12 +789,12 @@ class _LibUSB(usb.backend.IBackend):
                             timeout)
 
     @methodtrace(_logger)
-    def intr_read(self, dev_handle, ep, intf, buff, timeout):
+    def intr_read(self, dev_handle, ep, intf, size, timeout):
         return self.__read(self.lib.libusb_interrupt_transfer,
                            dev_handle,
                            ep,
                            intf,
-                           buff,
+                           size,
                            timeout)
 
     @methodtrace(_logger)
@@ -792,9 +803,10 @@ class _LibUSB(usb.backend.IBackend):
         return handler.submit(self.ctx)
 
     @methodtrace(_logger)
-    def iso_read(self, dev_handle, ep, intf, buff, timeout):
-        handler = _IsoTransferHandler(dev_handle, ep, buff, timeout)
-        return handler.submit(self.ctx)
+    def iso_read(self, dev_handle, ep, intf, size, timeout):
+        data = _interop.as_array('\x00' * size)
+        handler = _IsoTransferHandler(dev_handle, ep, data, timeout)
+        return data[:handler.submit(self.ctx)]
 
     @methodtrace(_logger)
     def ctrl_transfer(self,
@@ -803,10 +815,15 @@ class _LibUSB(usb.backend.IBackend):
                       bRequest,
                       wValue,
                       wIndex,
-                      data,
+                      data_or_wLength,
                       timeout):
-        addr, length = data.buffer_info()
-        length *= data.itemsize
+        if usb.util.ctrl_direction(bmRequestType) == usb.util.CTRL_OUT:
+            buff = data_or_wLength
+        else:
+            buff = _interop.as_array((0,) * data_or_wLength)
+
+        addr, length = buff.buffer_info()
+        length *= buff.itemsize
 
         ret = _check(self.lib.libusb_control_transfer(
                                         dev_handle.handle,
@@ -818,11 +835,10 @@ class _LibUSB(usb.backend.IBackend):
                                         length,
                                         timeout))
 
-        return ret
-
-    @methodtrace(_logger)
-    def clear_halt(self, dev_handle, ep):
-        _check(self.lib.libusb_clear_halt(dev_handle.handle, ep))
+        if usb.util.ctrl_direction(bmRequestType) == usb.util.CTRL_OUT:
+            return ret.value
+        else:
+            return buff[:ret.value]
 
     @methodtrace(_logger)
     def reset_device(self, dev_handle):
@@ -857,9 +873,10 @@ class _LibUSB(usb.backend.IBackend):
 
         return transferred.value
 
-    def __read(self, fn, dev_handle, ep, intf, buff, timeout):
-        address, length = buff.buffer_info()
-        length *= buff.itemsize
+    def __read(self, fn, dev_handle, ep, intf, size, timeout):
+        data = _interop.as_array('\x00' * size)
+        address, length = data.buffer_info()
+        length *= data.itemsize
         transferred = c_int()
         retval = fn(dev_handle.handle,
                   ep,
@@ -870,19 +887,15 @@ class _LibUSB(usb.backend.IBackend):
         # do not assume LIBUSB_ERROR_TIMEOUT means no I/O.
         if not (transferred.value and retval == LIBUSB_ERROR_TIMEOUT):
             _check(retval)
-        return transferred.value
+        return data[:transferred.value]
 
-def get_backend(find_library=None):
+def get_backend():
     global _lib
     try:
         if _lib is None:
-            _lib = _load_library(find_library=find_library)
+            _lib = _load_library()
             _setup_prototypes(_lib)
         return _LibUSB(_lib)
-    except usb.libloader.LibaryException:
-        # exception already logged (if any)
-        _logger.error('Error loading libusb 1.0 backend', exc_info=False)
-        return None
     except Exception:
         _logger.error('Error loading libusb 1.0 backend', exc_info=True)
         return None

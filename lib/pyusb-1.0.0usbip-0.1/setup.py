@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2009-2014 Wander Lairson Costa
+# Copyright (C) 2009-2013 Wander Lairson Costa
 #
 # The following terms apply to all files associated
 # with the software unless explicitly disclaimed in individual files.
@@ -35,13 +35,14 @@ import usb
 
 setup(
     name='pyusb',
-    version=usb.__version__,
+    version='1.0.0usbip-0.1',
     description='Python USB access module',
     author='Wander Lairson Costa',
     author_email='wander.lairson@gmail.com',
     license = 'BSD',
     url='http://pyusb.sourceforge.net',
     packages=['usb', 'usb.backend'],
+    scripts=['bin/devlist.py'],
     long_description =
 """
 PyUSB offers easy USB devices communication in Python.
