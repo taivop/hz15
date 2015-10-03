@@ -4,6 +4,7 @@
 
     var URL = "http://taivoapp.mybluemix.net/recent/?n=1";
     var URL = "http://localhost:3000/recent/?n=1";
+
     var INTERVAL = 1000;
 
     D3ts.defaults = {};
@@ -24,7 +25,7 @@
     };
 
     D3ts.defaults.range = {
-        x: [0, D3ts.defaults.width],
+        x: [-(D3ts.defaults.width), 0],
         y: [D3ts.defaults.height, 0]
     };
 
@@ -91,13 +92,13 @@
             .attr("height", height);
 
         // X axis.
-        this.svg.append("g")
+        this.xAxis = this.svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.svg.axis()
                   .scale(x)
-                  .orient("bottom")
-                  .tickFormat(""));
+                  .orient("bottom"));
+                  //.tickFormat(""));
 
         // Y axis.
         this.svg.append("g")
@@ -121,7 +122,7 @@
     };
 
     D3ts.prototype.update = function(value) {
-        var x;
+        var x, that;
 
         this.alreadyInit = this.alreadyInit || false;
         if (!this.alreadyInit) {
@@ -153,6 +154,9 @@
 
             this.data.shift();
             this.data[0] = 0;
+        }
+        else {
+            this.xAxis.ticks(this.data.length);
         }
     };
 
