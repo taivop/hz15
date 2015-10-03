@@ -77,15 +77,17 @@ var record_datapoint = function (req, res) {
     });
 }
 
-var return_room = function(req, res) {
+var return_rooms = function(req, res) {
     pg.connect(psql, function (err, client, done) {
         if (err) {
             return console.error('Error requesting client', err);
         }
 
         var rq = req.query;
-        client.query("select * from roomdata where room=$1",
-            [rq.room],
+        var room_list_string = rq.rooms.split(",").map(function(d) { return "'" + d + "'"; }).join(",");
+
+        client.query("select * from roomdata where room in (" + room_list_string + ");",
+            [],
             function (err, result) {
                 if (err) {
                     done();
@@ -115,19 +117,15 @@ pg.connect(psql, function (err, client, done) {
     });
 
 app.get('/', function (req, res) {
-   // record_visit(req, res);
+   // return_top_n
 });
 
 app.get('/insert', function (req, res) {
     record_datapoint(req, res);
 });
 
-app.get('/floor', function (req, res) {
-    //return_all_rooms(req, res);
-});
-
-app.get('/room', function (req, res) {
-    return_room(req, res);
+app.get('/rooms', function (req, res) {
+    return_rooms(req, res);
 });
 
 console.log("Listening on " + host + ":" + port);
