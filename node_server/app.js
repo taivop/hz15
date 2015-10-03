@@ -141,6 +141,10 @@ app.get('/recent', function (req, res) {
    return_last_n_datapoints(req, res);
 });
 
+app.get('/recent', function (req, res) {
+   return_last_n_datapoints(req, res);
+});
+
 app.get('/insert', function (req, res) {
     record_datapoint(req, res);
 });
@@ -148,6 +152,8 @@ app.get('/insert', function (req, res) {
 app.get('/room', function (req, res) {
     return_room(req, res);
 });
+
+app.use('/', express.static(__dirname + '/public'));
 
 console.log("Listening on " + host + ":" + port);
 app.listen(port, host);
