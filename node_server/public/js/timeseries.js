@@ -155,9 +155,6 @@
             this.data.shift();
             this.data[0] = 0;
         }
-        else {
-            this.xAxis.ticks(this.data.length);
-        }
     };
 
     window.D3ts = D3ts;
