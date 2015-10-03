@@ -137,7 +137,7 @@ pg.connect(psql, function (err, client, done) {
             });
     });
 
-app.get('/', function (req, res) {
+app.get('/recent', function (req, res) {
    return_last_n_datapoints(req, res);
 });
 
