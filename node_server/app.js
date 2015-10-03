@@ -56,34 +56,78 @@ var record_visit = function (req, res) {
 };
 
 var record_datapoint = function (req, res) {
+    pg.connect(psql, function (err, client, done) {
+        if (err) {
+            return console.error('Error requesting client', err);
+        }
 
+        var rq = req.query;
+        client.query('insert into roomdata(room, light, temperature, humidity, motion, sound) values($1, $2, $3, $4, $5, $6)',
+            [rq.room, rq.light, rq.temperature, rq.humidity, rq.motion, rq.sound],
+            function (err, result) {
+                if (err) {
+                    done();
+                    return console.error('Error inserting values', err);
+                }
+
+                res.writeHead(200, {'Content-Type': 'text/html'});
+                res.end("Insertion successful.");
+
+            });
+    });
 }
 
-// On startup, drop the table if it exists then create it.
+var return_room = function(req, res) {
+    pg.connect(psql, function (err, client, done) {
+        if (err) {
+            return console.error('Error requesting client', err);
+        }
+
+        var rq = req.query;
+        client.query("select * from roomdata where room=$1",
+            [rq.room],
+            function (err, result) {
+                if (err) {
+                    done();
+                    return console.error('Error retrieving values', err);
+                }
+
+                res.writeHead(200, {'Content-Type': 'text/html'});
+                res.write(JSON.stringify(result.rows));
+                res.end();
+            });
+    });
+}
+
+// On startup, create the table if doesn't exist
 pg.connect(psql, function (err, client, done) {
     if (err) {
         return console.error('Error requesting client', err);
     }
 
-    client.query('drop table if exists ips', function (err, result) {
-        if (err) {
-            done();
-            return console.error('Error dropping table ips', err);
-        }
-
-        client.query('create table ips(id serial, ip varchar(40), ts date)',
+        client.query('create table if not exists roomdata(id serial, room varchar(30), ts timestamp default current_timestamp, light real, temperature real, humidity real, motion real, sound real)',
             function (err, result) {
                 done();
                 if (err) {
-                    return console.error('Error creating table ips',
-                        err);
+                    return console.error('Error creating table roomdata', err);
                 }
             });
     });
-});
 
 app.get('/', function (req, res) {
-    record_visit(req, res);
+   // record_visit(req, res);
+});
+
+app.get('/insert', function (req, res) {
+    record_datapoint(req, res);
+});
+
+app.get('/floor', function (req, res) {
+    //return_all_rooms(req, res);
+});
+
+app.get('/room', function (req, res) {
+    return_room(req, res);
 });
 
 console.log("Listening on " + host + ":" + port);
