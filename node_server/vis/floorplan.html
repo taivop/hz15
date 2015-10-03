@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
+<script type="text/javascript">
+    width = 500;
+    height = 500
+
+    shape = 0;
+
+
+    data = [];
+    for(i=1; i<10; i++) {
+        obj = {
+            x: width * 0.5 + (Math.random() - 0.5) * width * 0.9,
+            y: height * 0.5 + (Math.random() - 0.5) * height * 0.9
+        }
+
+        data.push(obj);
+    }
+
+    svg = d3.select("body")
+            .append("svg")
+            .attr("width", 500)
+            .attr("height", 500)
+
+    square_size = 30;
+
+    squares = svg.selectAll("rect")
+            .data(data)
+
+    squares
+            .enter()
+            .append("rect")
+            .attr("x", function(d) {return d.x;})
+            .attr("y", function(d) {return d.y;})
+            .attr("width", 30)
+            .attr("height", 30)
+            .attr("fill", "red")
+
+    svg.on("click", function(d) {
+        if(shape % 3 == 0) {
+            squares
+                    .transition()
+                    .duration(1000)
+                    .attr("width", square_size)
+                    .attr("rx", square_size)
+                    .attr("ry", square_size)
+        }
+        if(shape % 3 == 1) {
+            squares
+                    .transition()
+                    .duration(1000)
+                    .attr("rx", 0)
+                    .attr("ry", 0)
+        }
+        if(shape % 3 == 2) {
+            squares
+                    .transition()
+                    .duration(1000)
+                    .attr("width", square_size * 2)
+        }
+
+        shape += 1
+    })
+
+
+
+</script>
+</body>
+</html>
