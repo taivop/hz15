@@ -158,7 +158,7 @@
     var tempYRange = 30;
     var humYRange = 100;
     var lightYRange = 1600;
-    var noiseYRange = 1;
+    var noiseYRange = 125;
     var motionYRange = 1;
 
     var d3tsTemp = new D3ts({
