@@ -11,33 +11,50 @@
 #example2b { min-height: 255px; }
 
 svg {
- border: 1px solid #CCC;
+ border: 5px solid white;
  padding: 20px;
  padding-left: 50px;
 }
 
+#sensors {
+  margin: 100 auto;
+  border: 5px solid #DDD;
+  background: #2A23B;
+  padding: 20px;
+}
+
+body {
+ background: #CCC;
+}
+
+.tdTitle {
+  text-align: right;
+  font-weight: bold;
+  font-family: "Yanone Kaffeesatz";
+}
+
 </style>
 <div id="body">
-
-<table>
+<h2>Room Sensors</h2>
+<table id="sensors">
   <tr>
-    <td>Temperature:</td>
+    <td class="tdTitle">Temperature:</td>
     <td id="temperature"></td>
   </tr>
   <tr>
-    <td>Humidity:</td>
+    <td class="tdTitle">Humidity:</td>
     <td id="humidity"></td>
 </tr>
   <tr>
-    <td>Light:</td>
+    <td class="tdTitle">Light:</td>
     <td id="light"></td>
 </tr>
   <tr>
-    <td>Noise:</td>
+    <td class="tdTitle">Noise:</td>
     <td id="noise"></td>
 </tr>
   <tr>
-    <td>Motion:</td>
+    <td class="tdTitle">Motion:</td>
     <td id="motion"></td>
 </tr>
 </table
