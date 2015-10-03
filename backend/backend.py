@@ -6,6 +6,8 @@ import usb.core
 import datetime
 import urllib2
 import time
+import logging
+logging.basicConfig(filename='backend.log',format='%(asctime)s %(levelname)s:%(message)s',level=logging.DEBUG)
 
 def open_sensor_connection(ip, mac):
 	os.environ["USBIP_SERVER"] = ip
@@ -66,8 +68,17 @@ def main():
 				
 				if args.remote:
 					url = args.remoteprotocol.format(ROOM=args.room,LIGHT=data1,TEMP=data2,HUMID=data3,MOTION=data4,SOUND=data5,TS=timestamp)
-					print(url)
-					urllib2.urlopen(url, timeout=10).close()
+					tries = 5
+					while tries > 0:
+						try:
+							urllib2.urlopen(url, timeout=5).close()
+							tries = 0
+						except Exception as e:
+							tries -= 1;
+							if tries != 0:
+								logging.warning("url request failed: " + str(e))
+							else:
+								logging.error("url (" + url + ") request failed: " + str(e))
 				
 				time.sleep(1/args.samplingrate)
 		
