@@ -89,6 +89,79 @@ var return_room = function(req, res) {
     });
 }
 
+// Return equal timestep data for the specified range for the specified room
+var return_room = function(req, res) {
+    pg.connect(psql, function (err, client, done) {
+        if (err) {
+            return console.error('Error requesting client', err);
+        }
+
+        var rq = req.query;
+        
+        function formatDate(date) {
+            return date.getFullYear() + '-' + (date.getMonth()+1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+        }
+        
+        if (typeof rq.room != "undefined" || typeof rq.fromdate == "undefined" || typeof rq.todate == "undefined") {
+            rq.fromdate = new Date(rq.fromdate);
+            rq.todate = new Date(rq.todate);
+        
+            var room_string = "'" + rq.room + "'";
+            var fromdate_string = "'" + formatDate(rq.fromdate) + "'";
+            var todate_string = "'" + formatDate(rq.todate) + "'";
+            client.query("select * from roomdata where room = " + room_string + " and ts between " + fromdate_string + " and " + todate_string + " order by ts asc;",
+                [],
+                function (err, r) {
+                    if (err) {
+                        done();
+                        return console.error('Error retrieving values', err);
+                    }
+                    
+                    var output = new Array();
+                    var numelements = 299;
+                    var deltatime = (rq.todate.getTime() - rq.fromdate.getTime())/numelements;
+                    var currtime = rq.fromdate.getTime();
+                    
+                    var j = 0;
+                    
+                    for (i = 0; i < numelements; i++) {
+                        while (new Date(r.rows[j+1].ts).getTime() < currtime) {
+                            if (j+1 == r.rows.length - 1) {
+                                break;
+                            }
+                            j++;
+                        }
+                        
+                        var no = {};
+                        no.room = rq.room;
+                        no.ts = formatDate(new Date(currtime));
+                        var k = (currtime - new Date(r.rows[j].ts).getTime())/(new Date(r.rows[j+1].ts).getTime() - new Date(r.rows[j].ts).getTime());
+                        no.light = r.rows[j].light + k*(r.rows[j+1].light - r.rows[j+1].light);
+                        no.temperature = r.rows[j].temperature + k*(r.rows[j+1].temperature - r.rows[j+1].temperature);
+                        no.humidity = r.rows[j].humidity + k*(r.rows[j+1].humidity - r.rows[j+1].humidity);
+                        no.motion = r.rows[j].motion + k*(r.rows[j+1].motion - r.rows[j+1].motion);
+                        no.sound = r.rows[j].sound + k*(r.rows[j+1].sound - r.rows[j+1].sound);
+                        output.push(no);
+                        
+                        currtime += deltatime;
+                    }
+                    
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.write(JSON.stringify(output));
+                    res.end();
+                });
+        }
+        else {
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.write(JSON.stringify([]));
+            res.end();
+        }
+
+        done();
+
+    });
+}
+
 // Return latest datapoint for each room
 var return_latest = function(req, res) {
 
