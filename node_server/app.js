@@ -24,6 +24,7 @@ if (process.env.VCAP_SERVICES) {
     };
 }
 
+// Save datapoint to database
 var record_datapoint = function (req, res) {
     pg.connect(psql, function (err, client, done) {
         if (err) {
@@ -34,8 +35,9 @@ var record_datapoint = function (req, res) {
         client.query('insert into roomdata(room, light, temperature, humidity, motion, sound) values($1, $2, $3, $4, $5, $6)',
             [rq.room, rq.light, rq.temperature, rq.humidity, rq.motion, rq.sound],
             function (err, result) {
+                done();
+
                 if (err) {
-                    done();
                     return console.error('Error inserting values', err);
                 }
 
@@ -43,9 +45,12 @@ var record_datapoint = function (req, res) {
                 res.end("Insertion successful.");
 
             });
+
+        done();
     });
 }
 
+// Return all datapoints for listed rooms
 var return_room = function(req, res) {
     pg.connect(psql, function (err, client, done) {
         if (err) {
@@ -53,6 +58,7 @@ var return_room = function(req, res) {
         }
 
         var rq = req.query;
+
 
         if(typeof rq.rooms != "undefined") {
             var room_list_string = rq.rooms.split(",").map(function(d) { return "'" + d + "'"; }).join(",");
@@ -78,10 +84,17 @@ var return_room = function(req, res) {
             res.end();
         }
 
+        done();
 
     });
 }
 
+// Return latest datapoint for each room
+var return_latest = function(req, res) {
+
+}
+
+// Return last 20 datapoints added to the database
 var return_last_n_datapoints = function(req, res) {
     pg.connect(psql, function (err, client, done) {
         if (err) {
@@ -90,11 +103,13 @@ var return_last_n_datapoints = function(req, res) {
 
         var rq = req.query;
 
-        client.query("select * from roomdata order by ts desc limit 20;",
-            [],
+        var n = rq.n || 20;
+
+        client.query("select * from roomdata order by ts desc limit $1;",
+            [n],
             function (err, result) {
+                done();
                 if (err) {
-                    done();
                     return console.error('Error retrieving values', err);
                 }
 
@@ -102,6 +117,8 @@ var return_last_n_datapoints = function(req, res) {
                 res.write(JSON.stringify(result.rows));
                 res.end();
             });
+
+        done();
     });
 }
 
