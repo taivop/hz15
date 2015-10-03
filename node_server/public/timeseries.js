@@ -99,7 +99,10 @@
         // Y axis
         this.svg.append("g")
             .attr("class", "y axis")
-            .call(d3.svg.axis().scale(y).orient("left"));
+            .call(d3.svg.axis()
+                  .scale(y)
+                  .orient("left")
+                  .ticks(5));
 
         this.path = this.svg.append("g")
             .attr("clip-path", "url(#clip)")
@@ -194,7 +197,7 @@
     d3tsNoise.append(document.getElementById("noise"));
     d3tsMotion.append(document.getElementById("motion"));
     
-    window.aa = setInterval(function(){
+    window.d3Interval = setInterval(function() {
         
         d3.json(URL, function(json) {
             var temp, hum, light, noise, motion;
