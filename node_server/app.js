@@ -24,37 +24,6 @@ if (process.env.VCAP_SERVICES) {
     };
 }
 
-// Add the visit to the database and display the number of visits for the
-// requesting ip address.
-var record_visit = function (req, res) {
-    /* Connect to the DB and auth */
-    pg.connect(psql, function (err, client, done) {
-        if (err) {
-            return console.error('Error requesting client', err);
-        }
-
-        client.query('insert into ips(ip, ts) values($1, $2)',
-            [req.connection.remoteAddress, new Date()],
-            function (err, result) {
-                if (err) {
-                    done();
-                    return console.error('Error inserting ip', err);
-                }
-
-                client.query('select count(ip) as count from ips where ip=$1',
-                    [req.connection.remoteAddress], function (err, result) {
-                        done();
-                        if (err) {
-                            return console.error('Error querying count', err);
-                        }
-                        res.writeHead(200, {'Content-Type': 'text/html'});
-                        res.end("You have visited " + result.rows[0].count
-                            + " times");
-                    });
-            });
-    });
-};
-
 var record_datapoint = function (req, res) {
     pg.connect(psql, function (err, client, done) {
         if (err) {
@@ -77,16 +46,51 @@ var record_datapoint = function (req, res) {
     });
 }
 
-var return_rooms = function(req, res) {
+var return_room = function(req, res) {
     pg.connect(psql, function (err, client, done) {
         if (err) {
             return console.error('Error requesting client', err);
         }
 
         var rq = req.query;
-        var room_list_string = rq.rooms.split(",").map(function(d) { return "'" + d + "'"; }).join(",");
 
-        client.query("select * from roomdata where room in (" + room_list_string + ");",
+        if(typeof rq.rooms != "undefined") {
+            var room_list_string = rq.rooms.split(",").map(function(d) { return "'" + d + "'"; }).join(",");
+
+            client.query("select * from roomdata where room in (" + room_list_string + ");",
+                [],
+                function (err, result) {
+                    if (err) {
+                        done();
+                        return console.error('Error retrieving values', err);
+                    }
+
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.write(JSON.stringify(result.rows));
+                    res.end();
+                });
+        }
+        else {
+            room_list_string = ""
+
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.write(JSON.stringify([]));
+            res.end();
+        }
+
+
+    });
+}
+
+var return_last_n_datapoints = function(req, res) {
+    pg.connect(psql, function (err, client, done) {
+        if (err) {
+            return console.error('Error requesting client', err);
+        }
+
+        var rq = req.query;
+
+        client.query("select * from roomdata order by ts desc limit 20;",
             [],
             function (err, result) {
                 if (err) {
@@ -94,7 +98,7 @@ var return_rooms = function(req, res) {
                     return console.error('Error retrieving values', err);
                 }
 
-                res.writeHead(200, {'Content-Type': 'text/html'});
+                res.writeHead(200, {'Content-Type': 'application/json'});
                 res.write(JSON.stringify(result.rows));
                 res.end();
             });
@@ -117,15 +121,15 @@ pg.connect(psql, function (err, client, done) {
     });
 
 app.get('/', function (req, res) {
-   // return_top_n
+   return_last_n_datapoints(req, res);
 });
 
 app.get('/insert', function (req, res) {
     record_datapoint(req, res);
 });
 
-app.get('/rooms', function (req, res) {
-    return_rooms(req, res);
+app.get('/room', function (req, res) {
+    return_room(req, res);
 });
 
 console.log("Listening on " + host + ":" + port);
