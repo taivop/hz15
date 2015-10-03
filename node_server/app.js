@@ -85,12 +85,12 @@ var return_room = function(req, res) {
         temperature: Math.floor(Math.random() * 10)+20,
         motion: Math.floor(Math.random() * 10),
         sound: Math.floor(Math.random() * 10),
+        humidity: Math.floor(Math.random() * 10)
     });
             
 
-    res.writeHead(200, {'Content-Type': 'json'});
-    res.write(out);
-    res.end();
+    res.setHeader('Content-Type', 'application/json');
+    res.send(out);
     return;
 
     pg.connect(psql, function (err, client, done) {
