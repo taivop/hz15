@@ -2,7 +2,7 @@
 
     "use strict";
 
-    var URL = "http://localhost:3000/recent/?n=1";
+    var URL = "http://taivoapp.mybluemix.net/recent/?n=1";
     var INTERVAL = 1000;
 
     D3ts.defaults = {};
@@ -157,15 +157,15 @@
 
     var tempYRange = 30;
     var humYRange = 100;
-    var lightYRange = 1000;
+    var lightYRange = 1600;
     var noiseYRange = 1;
     var motionYRange = 1;
 
     var d3tsTemp = new D3ts({
-        domain: { x: [0, 20], y: [0, tempYRange] } 
+        domain: { x: [0, 20], y: [10, tempYRange] }
     });
     var d3tsHum = new D3ts({
-        domain: { x: [0, 20], y: [0, humYRange] } 
+        domain: { x: [0, 20], y: [0, humYRange] }
         
     });
     var d3tsLight = new D3ts({
@@ -177,7 +177,7 @@
         
     });
     var d3tsMotion = new D3ts({
-        domain: { x: [0, 20], y: [0, motionYRange] }   
+        domain: { x: [0, 20], y: [-1, motionYRange] }
     });
 
     d3tsTemp.append(document.getElementById("temperature"));
@@ -191,6 +191,7 @@
         d3.json(URL, function(json) {
             var temp, hum, light, noise, motion;
 
+            json = json[0];
             temp = (2*json.temperature)/(9*4.095) - 61.1
             light = (1.5094*json.light/4.095) + 37.515;
             hum = (0.1906*json.humidity/4.095) - 40.2;
