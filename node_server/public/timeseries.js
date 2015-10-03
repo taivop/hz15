@@ -3,6 +3,7 @@
     "use strict";
 
     var URL = "http://taivoapp.mybluemix.net/recent/?n=1";
+    //var URL = "http://localhost:3000/recent/?n=1";
     var INTERVAL = 1000;
 
     D3ts.defaults = {};
@@ -162,7 +163,7 @@
 
     var tempYRange = 30;
     var humYRange = 100;
-    var lightYRange = 1600;
+    var lightYRange = 100;
     var noiseYRange = 125;
     var motionYRange = 1;
 
@@ -171,19 +172,19 @@
         color: "red"
     });
     var d3tsHum = new D3ts({
-        domain: { x: [0, 20], y: [0, humYRange] }
+        domain: { x: [0, 20], y: [0, humYRange] },
         color: "blue"
     });
     var d3tsLight = new D3ts({
-        domain: { x: [0, 20], y: [0, lightYRange] } 
-        color: "yellow"
+        domain: { x: [0, 20], y: [0, lightYRange] },
+        color: "brown"
     });
     var d3tsNoise = new D3ts({
-        domain: { x: [0, 20], y: [60, noiseYRange] } 
+        domain: { x: [0, 20], y: [60, noiseYRange] },
         color: "green"
     });
     var d3tsMotion = new D3ts({
-        domain: { x: [0, 20], y: [-1, motionYRange] }
+        domain: { x: [0, 20], y: [-1, motionYRange] },
         color: "purple"
     });
 
