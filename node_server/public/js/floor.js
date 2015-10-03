@@ -36,7 +36,12 @@ d3.json("data/floor_layout.json", function(floor_layout) {
         .attr("transform", function(d) { return "translate(" + x(d.x1) + "," + y(d.y1) + ")"; });
 
     room_rects.append("rect")
-        .attr("class", "room_rect")
+        .attr("class", function(d) {
+            if(d.name == "Suite")
+                return "room_rect suite";
+            else
+                return "room_rect";
+        })
         .attr("width", function(d) {return x(d.x2) - x(d.x1)})
         .attr("height", function(d) {return y(d.y2) - y(d.y1); })
         .attr("fill", function(d) {return d.fillcolor;});
@@ -53,6 +58,12 @@ d3.json("data/floor_layout.json", function(floor_layout) {
         .on("mouseover", function(d) {
             console.log("hovering on " + d.name)
         })
+
+    room_rects.select(".suite")
+        .on("mousedown", function() {
+            window.open("suite.html","_self");
+        })
+
 
     var measurements_text = room_rects.append("text")
         .attr("class", "measurements")
@@ -108,8 +119,6 @@ updateSVG = function(data){
 onTick = function() {
     d3.json("/recent/?n=1", function(err, json) {
         var arr = generateMeasurementArray(6);
-
-        console.log(json);
 
         arr[2].temperature = +json[0].temperature;
         arr[2].humidity = +json[0].humidity;
