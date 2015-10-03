@@ -37,7 +37,7 @@
         this.n = o.domain.x[1];        
         this.color = o.color || null;
         this.id = o.id;
-        this.data = [[0]];
+        this.data = [];
 
         this.margin = o.margin;
 
@@ -85,7 +85,7 @@
 
 
         // Line does not go out the axis.
-        this.svg.append("defs").append("clipPath")
+        this.svg.append("defs").append("path")
             .attr("id", "clip")
             .append("rect")
             .attr("width", width)
@@ -109,16 +109,14 @@
                   .ticks(5));
 
         this.path = this.svg.append("g")
-            .attr("clip-path", "url(#clip)")
-            // .attr("stroke","red")
+            //.attr("clip-path", "url(#clip)")
+            .attr("stroke","red")
             .append("path")
             .data([this.data])
             .attr("class", "line")
-            .attr("d", this.line);
+            .attr("d", this.line)
+            .attr("fill", "none");
 
-        if (this.color) {
-            this.path.attr("fill", this.color);
-        }
     };
 
     D3ts.prototype.update = function(value) {
@@ -135,7 +133,7 @@
         // Add a new data point and zero value
         // to create the mountain effect.
         this.data.push(value);
-        this.data.push(0);
+        //this.data.push(0);
 
         // Redraw the line and slides.
         this.path
@@ -152,8 +150,8 @@
                 .ease("linear")
                 .attr("transform", "translate(" + x(-1) + ")");
 
-            this.data.shift();
-            this.data[0] = 0;
+            //this.data.shift();
+            //this.data[0] = 0;
         }
     };
 
