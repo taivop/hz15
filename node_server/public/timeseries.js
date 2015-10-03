@@ -173,7 +173,7 @@
         
     });
     var d3tsNoise = new D3ts({
-        domain: { x: [0, 20], y: [0, noiseYRange] } 
+        domain: { x: [0, 20], y: [60, noiseYRange] }
         
     });
     var d3tsMotion = new D3ts({
