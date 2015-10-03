@@ -111,6 +111,7 @@
         this.path = this.svg.append("g")
             //.attr("clip-path", "url(#clip)")
             .attr("stroke","red")
+            .attr("stroke-width", "4px")
             .append("path")
             .data([this.data])
             .attr("class", "line")
@@ -206,17 +207,13 @@
             var temp, hum, light, noise, motion;
 
             json = json[0];
-            temp = convert_temp(json.temperature);
-            light = convert_light(json.light);
-            hum = convert_humid(json.humidity);
-            motion = convert_motion(json.motion);
-            noise = convert_noise(json.noise);
+            temp = convert_temp(+json.temperature);
+            light = convert_light(+json.light);
+            hum = convert_humid(+json.humidity);
+            motion = convert_motion(+json.motion);
+            noise = convert_noise(+json.sound);
 
-            console.log(temp);
-            console.log(light);
-            console.log(hum);
-            console.log(motion);
-            console.log(noise);
+            console.log(temp + " | " + hum + " | " + light + " | " + noise + " | " + motion);
 
             if (isNaN(temp) || temp == Infinity || temp == -Infinity) {
                 temp = 0;
