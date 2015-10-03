@@ -1,7 +1,7 @@
 import os
 import usb.core
 
-usbip_server = "10.0.1.1"
+usbip_server = "10.0.4.1"
 
 
 def normalize(value):
@@ -16,7 +16,7 @@ def main():
     os.environ["USBIP_SERVER"] = usbip_server
 
     # Find the device you want to work with
-    device = usb.core.find(address=int("0022bdcf5bc0", 16))  # Find using mac address
+    device = usb.core.find(address=int("0022bdcf4734", 16))  # Find using mac address
     #device = usb.core.find(idVendor=0x06c2, idProduct=0x007d)  # Find using USB Vendor/Product
 
     if device is None:
@@ -41,7 +41,7 @@ def main():
             data7 = data[0x16] | ((data[0x15] & 0x0f) << 8)
 
             # Print out the raw data
-            print(data0, data1, data2, data3, data4, data5, data6, data7)
+            print(normalize(data1), normalize(data2), normalize(data3), normalize(data4), normalize(data5))
 
 if __name__ == "__main__":
     main()
