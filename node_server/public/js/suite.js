@@ -2,8 +2,8 @@
 
     "use strict";
 
-    var URL = "http://taivoapp.mybluemix.net/recent/?n=1";
-    var URL = "http://localhost:3000/recent/?n=1";
+    //var URL = "http://taivoapp.mybluemix.net/recent/?n=1";
+    var URL = "/recent/?n=1";
 
     var INTERVAL = 1000;
 
