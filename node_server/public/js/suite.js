@@ -208,11 +208,11 @@
             var temp, hum, light, noise, motion;
 
             json = json[0];
-            temp = (2*json.temperature)/(9*4.095) - 61.1
-            light = (1.5094*json.light/4.095) + 37.515;
-            hum = (0.1906*json.humidity/4.095) - 40.2;
-            motion = json.motion/(4.095*500) - 1; 
-            noise = (16.801*Math.log(json.sound)) + 9.872;
+            temp = convert_temp(json.temperature);
+            light = convert_light(json.light);
+            hum = convert_humid(json.humidity);
+            motion = convert_motion(json.motion);
+            noise = convert_noise(json.noise);
 
             console.log(temp);
             console.log(light);
