@@ -90,7 +90,7 @@ var return_room = function(req, res) {
 }
 
 // Return equal timestep data for the specified range for the specified room
-var return_room = function(req, res) {
+var return_room_new = function(req, res) {
     pg.connect(psql, function (err, client, done) {
         if (err) {
             return console.error('Error requesting client', err);
@@ -224,6 +224,10 @@ app.get('/insert', function (req, res) {
 
 app.get('/room', function (req, res) {
     return_room(req, res);
+});
+
+app.get('/room_new', function (req, res) {
+    return_room_new(req, res);
 });
 
 app.use('/', express.static(__dirname + '/public'));
