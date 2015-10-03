@@ -1,0 +1,57 @@
+{
+  "rooms": [
+    {
+      "name": "701",
+      "fillcolor": "white",
+      "x1": 0,
+      "x2": 10,
+      "y1": 0,
+      "y2": 10
+    },
+
+    {
+      "name": "702",
+      "fillcolor": "white",
+      "x1": 10,
+      "x2": 20,
+      "y1": 0,
+      "y2": 10
+    },
+
+    {
+      "name": "Suite",
+      "fillcolor": "white",
+      "x1": 20,
+      "x2": 35,
+      "y1": 0,
+      "y2": 20
+    },
+
+    {
+      "name": "704",
+      "fillcolor": "white",
+      "x1": 15,
+      "x2": 35,
+      "y1": 20,
+      "y2": 30
+    },
+
+    {
+      "name": "705",
+      "fillcolor": "white",
+      "x1": 0,
+      "x2": 15,
+      "y1": 20,
+      "y2": 30
+    },
+
+    {
+      "name": "Corridor",
+      "fillcolor": "#dddddd",
+      "x1": 0,
+      "x2": 20,
+      "y1": 10,
+      "y2": 20
+    }
+  ]
+}

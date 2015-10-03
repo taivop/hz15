@@ -1,0 +1,15 @@
+
+svg {
+    shape-rendering: crispEdges;
+    font-family: "Helvetica Neue";
+}
+
+.room_rect {
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.room_name {
+    font-size: 2em;
+    font-weight: bold;
+}
