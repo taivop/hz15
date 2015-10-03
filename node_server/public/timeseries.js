@@ -32,7 +32,8 @@
         
         this.svg = null;
         this.options = o = JSUS.merge(D3ts.defaults, options);
-        this.n = o.domain.x[1];
+        this.n = o.domain.x[1];        
+        this.color = o.color || null;
         this.id = o.id;
         this.data = [[0]];
 
@@ -101,11 +102,15 @@
 
         this.path = this.svg.append("g")
             .attr("clip-path", "url(#clip)")
-            .attr("stroke","red")
+            // .attr("stroke","red")
             .append("path")
             .data([this.data])
             .attr("class", "line")
             .attr("d", this.line);
+
+        if (this.color) {
+            this.path.attr("fill", this.color);
+        }
     };
 
     D3ts.prototype.update = function(value) {
@@ -162,22 +167,24 @@
     var motionYRange = 1;
 
     var d3tsTemp = new D3ts({
-        domain: { x: [0, 20], y: [10, tempYRange] }
+        domain: { x: [0, 20], y: [10, tempYRange] },
+        color: "red"
     });
     var d3tsHum = new D3ts({
         domain: { x: [0, 20], y: [0, humYRange] }
-        
+        color: "blue"
     });
     var d3tsLight = new D3ts({
         domain: { x: [0, 20], y: [0, lightYRange] } 
-        
+        color: "yellow"
     });
     var d3tsNoise = new D3ts({
         domain: { x: [0, 20], y: [0, noiseYRange] } 
-        
+        color: "green"
     });
     var d3tsMotion = new D3ts({
         domain: { x: [0, 20], y: [-1, motionYRange] }
+        color: "purple"
     });
 
     d3tsTemp.append(document.getElementById("temperature"));
