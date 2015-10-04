@@ -137,7 +137,7 @@
                 // Add new values
                 //group.data.push(group.value) // Real values arrive at irregular intervals
                 d3.json("../recent/?n=1", function(err, json) {
-                    plot.data.push({x: fromUTC(new Date(json[0].ts)), y: convert[urlParams.sensor](json[0][urlParams.sensor])})
+                    plot.data.push({x: new Date(json[0].ts), y: convert[urlParams.sensor](json[0][urlParams.sensor])})
                     console.log(plot.data[plot.data.length-1]);
                     console.log(json[0].light + " | " + json[0].temperature + " | " + json[0].humidity + " | " + json[0].motion + " | " + json[0].sound);
                     plot.path.attr('d', line);
