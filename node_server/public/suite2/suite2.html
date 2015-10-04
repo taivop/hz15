@@ -64,7 +64,8 @@
             })
         })    
         
-        //console.log(plot)
+        console.log("1")
+        console.log(plot)
         
         
         var x = d3.time.scale()
@@ -101,6 +102,9 @@
             .style('stroke', plot.color)
             .style('fill', 'none')
         
+        console.log("2")
+        console.log(plot)
+        
 
         function tick() {
             now = new Date()
@@ -111,7 +115,10 @@
                 plot.data.push({x: fromUTC(new Date(json[0].ts)), y: convert_light(json[0].light)})
                 plot.path.attr('d', line)
             }) 
-
+            
+            console.log("3")
+            console.log(plot)
+            
             // Shift domain
             x.domain([now - duration, now])
 
@@ -131,6 +138,9 @@
 
             // Remove oldest data point from each group
             plot.data.shift()
+            
+            console.log("4")
+            console.log(plot)
             
         }
 
