@@ -14,10 +14,12 @@ See demo at [demo.sencis.co](http://demo.sencis.co/suite.html)! In the demo, onl
 
 ## Screenshots
 
+![Screenshot 3](http://pungas.ee/files/hackzurich/3.png)
+
+---
+
 ![Screenshot 1](http://pungas.ee/files/hackzurich/1.png)
+
 ---
 
 ![Screenshot 2](http://pungas.ee/files/hackzurich/2.png)
----
-
-![Screenshot 3](http://pungas.ee/files/hackzurich/3.png)
