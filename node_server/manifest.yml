@@ -2,7 +2,7 @@ applications:
 - path: .
   memory: 1024M
   instances: 1
-  domain: demo.sencis.co
+  domain: mybluemix.net
   name: TaivoApp
   host: TaivoApp
   disk_quota: 1024M
