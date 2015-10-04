@@ -1,31 +1,35 @@
 
-@import url(//fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700);
+@import url(//fonts.googleapis.com/css?family=Roboto:400,700);
 
 #example1 { min-height: 155px; }
 #example2a { min-height: 153px; }
 #example2b { min-height: 255px; }
 
 svg {
-    border: 5px solid white;
-    padding: 20px;
+    padding: 40px 40px 40px 20px;
     padding-left: 50px;
-    background: #E2DCE4
 }
 
-#sensors {
-    margin: 100 auto;
-    border: 5px solid #DDD;
-    background: #CCC; /* 2A23B; */
-    padding: 20px;
+table#sensors {
+    margin: 50px auto;
+    min-width: 600px;
+    max-width: 800px;
 }
 
 body {
     background: white;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 0px 100px;
 }
 
 .tdTitle {
     text-align: right;
     font-weight: bold;
-    font-family: "Yanone Kaffeesatz";
+    font-family: "Roboto";
     padding-right: 15px;
+}
+
+.roomname {
+    font-weight: bold;
 }

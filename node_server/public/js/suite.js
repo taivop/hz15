@@ -63,7 +63,7 @@
     D3ts.prototype.append = function(root) {
         root = root || document.body;
         this.root = root;
-        this.svg = d3.select(root).append("svg");
+        this.svg = d3.select(root).append("svg").style("width", 500).style("height", 60);
         if (this.id) this.svg.id = this.id;
         return root;
     };
@@ -106,12 +106,12 @@
             .call(d3.svg.axis()
                   .scale(y)
                   .orient("left")
-                  .ticks(5));
+                  .ticks(3));
 
         this.path = this.svg.append("g")
             .attr("clip-path", "url(#clip)")
-            .attr("stroke","red")
-            .attr("stroke-width", "4px")
+            .attr("stroke",this.color)
+            .attr("stroke-width", "8px")
             .append("path")
             .data([this.data])
             .attr("class", "line")

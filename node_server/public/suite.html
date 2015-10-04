@@ -1,33 +1,38 @@
 <!DOCTYPE html>
+<html>
 <head>
   <meta charset="utf-8">
-  <title>TEST D3</title>
-  <link rel="stylesheet" type="text/css" href="css/suite.css"/>
+  <title>Suite live sensor data - sencis.co</title>
   <link rel="stylesheet" type="text/css" href="css/style.css"/>
+  <link rel="stylesheet" type="text/css" href="css/suite.css"/>
 </head>
 
 
 <body>
-<h2>Room Sensors</h2>
+<h2><span class="roomname">Suite</span> Room sensors</h2>
+<div id="values">
+  
+
+</div>
 <table id="sensors">
   <tr>
-    <td class="tdTitle">Temperature:</td>
+    <td class="tdTitle">Temperature</td>
     <td id="temperature"></td>
   </tr>
   <tr>
-    <td class="tdTitle">Humidity:</td>
+    <td class="tdTitle">Humidity</td>
     <td id="humidity"></td>
 </tr>
   <tr>
-    <td class="tdTitle">Light:</td>
+    <td class="tdTitle">Light</td>
     <td id="light"></td>
 </tr>
   <tr>
-    <td class="tdTitle">Noise:</td>
+    <td class="tdTitle">Noise</td>
     <td id="noise"></td>
 </tr>
   <tr>
-    <td class="tdTitle">Motion:</td>
+    <td class="tdTitle">Motion</td>
     <td id="motion"></td>
 </tr>
 </table>
@@ -39,3 +44,5 @@
 <script src="js/suite.js"></script>
 
 </body>
+
+</html>

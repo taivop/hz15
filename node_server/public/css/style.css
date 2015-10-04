@@ -141,11 +141,11 @@ h1 + h2 {
 
 h2 {
   font-weight: 400;
-  font-size: 28px;
+  font-size: 35px;
 }
 
 h1, h2 {
-  font-family: "Yanone Kaffeesatz";
+  font-family: "Roboto";
   text-rendering: optimizeLegibility;
 }
 
