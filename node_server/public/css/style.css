@@ -213,9 +213,3 @@ h1, h2 {
 .horizon .value {
   right: 0;
 }
-
-.line {
-  background: #000;
-  opacity: .2;
-  z-index: 2;
-}

@@ -5,7 +5,7 @@
     //var URL = "http://taivoapp.mybluemix.net/recent/?n=1";
     var URL = "/recent/?n=1";
 
-    var INTERVAL = 100;
+    var INTERVAL = 1000;
 
     D3ts.defaults = {};
 
@@ -16,7 +16,7 @@
         top: 0,
         right: 0,
         bottom: 0,
-        left: 40
+        left: 30
     };
 
     D3ts.defaults.domain = {
@@ -64,6 +64,8 @@
         root = root || document.body;
         this.root = root;
         this.svg = d3.select(root).append("svg").style("width", 500).style("height", 60);
+        this.svg.append("text")
+            .text("seconds ago").attr("x", this.x(10)).attr("y", this.height + 35).attr("text-anchor", "middle");
         if (this.id) this.svg.id = this.id;
         return root;
     };
@@ -111,7 +113,8 @@
         this.path = this.svg.append("g")
             .attr("clip-path", "url(#clip)")
             .attr("stroke",this.color)
-            .attr("stroke-width", "8px")
+            .attr("stroke-width", "4px")
+            .attr("stroke-linecap", "round")
             .append("path")
             .data([this.data])
             .attr("class", "line")
@@ -169,31 +172,25 @@
         y: [D3ts.defaults.height, 0]
     };
 
-    var tempYRange = 30;
-    var humYRange = 100;
-    var lightYRange = 100;
-    var noiseYRange = 125;
-    var motionYRange = 1;
-
     var d3tsTemp = new D3ts({
-        domain: { x: [0, 20], y: [10, tempYRange] },
-        color: "red"
+        domain: { x: [0, 20], y: [15, 30] },
+        color: "#e41a1c"
     });
     var d3tsHum = new D3ts({
-        domain: { x: [0, 20], y: [0, humYRange] },
-        color: "blue"
+        domain: { x: [0, 20], y: [20, 70] },
+        color: "#377eb8"
     });
     var d3tsLight = new D3ts({
-        domain: { x: [0, 20], y: [0, lightYRange] },
-        color: "brown"
+        domain: { x: [0, 20], y: [0, 100] },
+        color: "#ff7f00"
     });
     var d3tsNoise = new D3ts({
-        domain: { x: [0, 20], y: [60, noiseYRange] },
-        color: "green"
+        domain: { x: [0, 20], y: [60, 125] },
+        color: "#4daf4a"
     });
     var d3tsMotion = new D3ts({
-        domain: { x: [0, 20], y: [-1, motionYRange] },
-        color: "purple"
+        domain: { x: [0, 20], y: [-1, 1] },
+        color: "#984ea3"
     });
 
     d3tsTemp.append(document.getElementById("temperature"));
@@ -226,7 +223,7 @@
             d3.select("#val_motion").text(format_motion(motion));
             d3.select("#val_noise").text(format_noise(noise));
 
-            console.log(temp + " | " + hum + " | " + light + " | " + noise + " | " + motion);
+            //console.log(temp + " | " + hum + " | " + light + " | " + noise + " | " + motion);
 
             if (isNaN(temp) || temp == Infinity || temp == -Infinity) {
                 temp = 0;
