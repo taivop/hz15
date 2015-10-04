@@ -10,10 +10,25 @@
 
 <body>
 <h2><span class="roomname">Suite</span> Room sensors</h2>
-<div id="values">
-  
+<table id="values">
+  <thead>
+    <th>Temperature</th>
+    <th>Humidity</th>
+    <th>Light</th>
+    <th>Noise</th>
+    <th>Motion</th>
+  </thead>
+  <tbody>
+    <td><span id="val_temp"></span>&deg;</td>
+    <td><span id="val_humid"></span>%</td>
+    <td><span id="val_light"></span>Lux</td>
+    <td><span id="val_noise"></span>dB</td>
+    <td><span id="val_motion"></span></td>
+  </tbody>
+</table>
 
-</div>
+<hr>
+
 <table id="sensors">
   <tr>
     <td class="tdTitle">Temperature</td>

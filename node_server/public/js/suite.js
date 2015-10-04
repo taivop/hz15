@@ -214,6 +214,18 @@
             motion = convert_motion(+json.motion);
             noise = convert_noise(+json.sound);
 
+            var format_temp = d3.format(".1f");
+            var format_humid = d3.format(".0f");
+            var format_noise = d3.format(".0f");
+            var format_light = d3.format(".0f");
+            var format_motion = d3.format(".2f");
+
+            d3.select("#val_temp").text(format_temp(temp));
+            d3.select("#val_light").text(format_light(light));
+            d3.select("#val_humid").text(format_humid(hum));
+            d3.select("#val_motion").text(format_motion(motion));
+            d3.select("#val_noise").text(format_noise(noise));
+
             console.log(temp + " | " + hum + " | " + light + " | " + noise + " | " + motion);
 
             if (isNaN(temp) || temp == Infinity || temp == -Infinity) {
