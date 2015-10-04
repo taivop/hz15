@@ -134,7 +134,7 @@
 
         // Add a new data point and zero value
         // to create the mountain effect.
-        this.data.push(value);
+        this.data.unshift(value);
         //this.data.push(0);
 
         // Redraw the line and slides.
@@ -152,7 +152,7 @@
                 .ease("linear")
                 .attr("transform", "translate(" + this.x(21) + ")");
 
-            this.data.shift();
+            this.data.pop();
             //this.data[0] = 0;
         }
     };
