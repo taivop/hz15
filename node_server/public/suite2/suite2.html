@@ -62,89 +62,93 @@
             plot.data = json.map(function(j) {
                 return {x: fromUTC(new Date(j.ts)), y: convert_light(j.light)}
             })
+            
+            console.log("1")
+            console.log(plot)
+            
+            
+            var x = d3.time.scale()
+                .domain([now - duration, now])
+                .range([0, width])
+
+            var y = d3.scale.linear()
+                .domain([0, 100])
+                .range([height, 0])
+
+            var line = d3.svg.line()
+                .interpolate('basis')
+                .x(function(d) {
+                    return x(d.x)
+                })
+                .y(function(d) {
+                    return y(d.y)
+                })
+
+            var svg = d3.select('.graph').append('svg')
+                .attr('class', 'chart')
+                .attr('width', width)
+                .attr('height', height + 50)
+
+            var axis = svg.append('g')
+                .attr('class', 'x axis')
+                .attr('transform', 'translate(0,' + height + ')')
+                .call(x.axis = d3.svg.axis().scale(x).orient('bottom'))
+
+            var paths = svg.append('g')
+
+            plot.path = paths.append('path')
+                .data([plot.data])
+                .style('stroke', plot.color)
+                .style('fill', 'none')
+            
+            console.log("2")
+            console.log(plot)
+            
+            
+            
+            
+            function tick() {
+                now = new Date()
+
+                // Add new values
+                //group.data.push(group.value) // Real values arrive at irregular intervals
+                d3.json("../recent/?n=1", function(err, json) {
+                    plot.data.push({x: fromUTC(new Date(json[0].ts)), y: convert_light(json[0].light)})
+                    plot.path.attr('d', line)
+                }) 
+                
+                console.log("3")
+                console.log(plot)
+                
+                // Shift domain
+                x.domain([now - duration, now])
+
+                // Slide x-axis left
+                axis.transition()
+                    .duration(dt)
+                    .ease('linear')
+                    .call(x.axis)
+
+                // Slide paths left
+                paths.attr('transform', null)
+                    .transition()
+                    .duration(dt)
+                    .ease('linear')
+                    .attr('transform', 'translate(' + x(now - duration) + ')')
+                    .each('end', tick)
+
+                // Remove oldest data point from each group
+                plot.data.shift()
+                
+                console.log("4")
+                console.log(plot)
+                
+            }
+
+            tick()
         })    
         
-        console.log("1")
-        console.log(plot)
         
-        
-        var x = d3.time.scale()
-            .domain([now - duration, now])
-            .range([0, width])
-
-        var y = d3.scale.linear()
-            .domain([0, 100])
-            .range([height, 0])
-
-        var line = d3.svg.line()
-            .interpolate('basis')
-            .x(function(d) {
-                return x(d.x)
-            })
-            .y(function(d) {
-                return y(d.y)
-            })
-
-        var svg = d3.select('.graph').append('svg')
-            .attr('class', 'chart')
-            .attr('width', width)
-            .attr('height', height + 50)
-
-        var axis = svg.append('g')
-            .attr('class', 'x axis')
-            .attr('transform', 'translate(0,' + height + ')')
-            .call(x.axis = d3.svg.axis().scale(x).orient('bottom'))
-
-        var paths = svg.append('g')
-
-        plot.path = paths.append('path')
-            .data([plot.data])
-            .style('stroke', plot.color)
-            .style('fill', 'none')
-        
-        console.log("2")
-        console.log(plot)
-        
-
-        function tick() {
-            now = new Date()
-
-            // Add new values
-            //group.data.push(group.value) // Real values arrive at irregular intervals
-            d3.json("../recent/?n=1", function(err, json) {
-                plot.data.push({x: fromUTC(new Date(json[0].ts)), y: convert_light(json[0].light)})
-                plot.path.attr('d', line)
-            }) 
-            
-            console.log("3")
-            console.log(plot)
-            
-            // Shift domain
-            x.domain([now - duration, now])
-
-            // Slide x-axis left
-            axis.transition()
-                .duration(dt)
-                .ease('linear')
-                .call(x.axis)
-
-            // Slide paths left
-            paths.attr('transform', null)
-                .transition()
-                .duration(dt)
-                .ease('linear')
-                .attr('transform', 'translate(' + x(now - duration) + ')')
-                .each('end', tick)
-
-            // Remove oldest data point from each group
-            plot.data.shift()
-            
-            console.log("4")
-            console.log(plot)
-            
-        }
-
-        tick()
         </script>
     </body>
 </html>
