@@ -5,7 +5,7 @@
     //var URL = "http://taivoapp.mybluemix.net/recent/?n=1";
     var URL = "/recent/?n=1";
 
-    var INTERVAL = 1000;
+    var INTERVAL = 100;
 
     D3ts.defaults = {};
 
@@ -47,7 +47,7 @@
         // Identity function.
         this.x = x = d3.scale.linear()
             .domain(o.domain.x)
-            .range(o.range.x);
+            .range(o.range.x.reverse());
 
         this.y = y = d3.scale.linear()
             .domain(o.domain.y)
@@ -150,7 +150,7 @@
                 .transition()
                 .duration(500)
                 .ease("linear")
-                .attr("transform", "translate(" + this.x(-1) + ")");
+                .attr("transform", "translate(" + this.x(21) + ")");
 
             this.data.shift();
             //this.data[0] = 0;
