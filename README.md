@@ -1,10 +1,14 @@
-# sencis.co
+## sencis.co
 
-Sencis.co is a platform for tracking the ambience of rooms using cheap and abundant sensors. Use cases range from improving the 'feels good' factor at hotels to increasing employee well-being at offices.
+It is hard to focus in a noisy room, or in an unpleasantly cold one -- work environment has a massive effect on the productivity and happiness of employees. Sencis.co is a platform for tracking and visualising the ambience of rooms using cheap and abundant sensors. 
+
+![sencis.co logo](http://demo.sencis.co/data/logo_notext_small.png)
 
 Features:
 * Visual overview of rooms and real-time data visualisations.
 * Sensor box plugs into Ethernet port -- no extra infrastructure is needed (other than a compatible router).
-* Sensor results are stored and an HTTP API is provided for interfacing with analytics/business intelligence systems.
+* All measurements are stored and an HTTP API is provided for interfacing with analytics/business intelligence systems.
 
+
+## Demo
 See demo at [demo.sencis.co](http://demo.sencis.co/suite.html)! In the demo, only room [Suite](http://demo.sencis.co/suite.html) has actual tracking data; other rooms' data is simulated.
