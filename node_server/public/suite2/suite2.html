@@ -63,7 +63,10 @@
                 return {x: fromUTC(new Date(j.ts)), y: convert_light(j.light)}
             })
         })    
-
+        
+        console.log(plot)
+        
+        
         var x = d3.time.scale()
             .domain([now - duration, now])
             .range([0, width])
