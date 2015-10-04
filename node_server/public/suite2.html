@@ -15,7 +15,7 @@
 <script src="js/jquery-2.1.4.js"></script>
 <script src="js/d3.js"></script>
 <script src="js/epoch.min.js"></script>
-<!--<script src="js/sensor.js"></script>-->
+<script src="js/sensor.js"></script>
 
 <div id="taivo-container" style="height: 100px;">
 
@@ -70,7 +70,7 @@
     // First series
     {
       label: "Series 1",
-      values: [ {time: 1370044800, y: 100}, {time: 1370044801, y: 1000}]
+      values: [ {time: Date.now(), y: 24}]
   }];
 
   jQuery(document).ready(function ($) {
@@ -80,8 +80,8 @@
   onTick = function() {
     d3.json("/recent/?n=1", function(err, json) {
       myChart.push([{
-              y: +json[0].temperature,
-              time: new Date(json[0].ts)
+              y: convert_temp(+json[0].temperature),
+              time: Date.now()
       }]);
     })
   }
