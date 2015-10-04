@@ -112,7 +112,7 @@
 
         this.path = this.svg.append("g")
             .attr("clip-path", "url(#clip)")
-            .attr("stroke",this.color)
+            .attr("stroke", this.color)
             .attr("stroke-width", "4px")
             .attr("stroke-linecap", "round")
             .append("path")
