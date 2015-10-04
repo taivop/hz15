@@ -43,8 +43,8 @@
         function formatDate(date) {
             return date.getFullYear() + '-' + (date.getMonth()+1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
         }
-        function toUTC(date) {return date.setHours(date.getHours() - 2);}
-        function fromUTC(date) {return date.setHours(date.getHours() + 2);}
+        function toUTC(date) {date.setHours(date.getHours() - 2); return date;}
+        function fromUTC(date) {date.setHours(date.getHours() + 2); return date;}
         
         var duration = location.search.split('duration=')[1];
         if (typeof duration == "undefined") {duration = 300000;}
