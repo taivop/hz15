@@ -66,22 +66,62 @@
 </table>
 
 <script type="text/javascript">
-  var initialData = [
-    // First series
+  var initialDataTemp = [
     {
       label: "Series 1",
       values: [ {time: Date.now(), y: 24}]
   }];
+  var initialDataHum = [
+    {
+      label: "Series 1",
+      values: [ {time: Date.now(), y: 24}]
+    }];
+  var initialDataLight = [
+    {
+      label: "Series 1",
+      values: [ {time: Date.now(), y: 24}]
+    }];
+  var initialDataNoise = [
+    {
+      label: "Series 1",
+      values: [ {time: Date.now(), y: 24}]
+    }];
+  var initialDataMotion = [
+    {
+      label: "Series 1",
+      values: [ {time: Date.now(), y: 24}]
+    }];
 
   jQuery(document).ready(function ($) {
-    myChart = $('#temperature').epoch({ type: 'time.line', data: initialData });
+    chartTemp = $('#temperature').epoch({ type: 'time.line', data: initialDataTemp });
+    chartHum = $('#humidity').epoch({ type: 'time.line', data: initialDataHum });
+    chartLight = $('#light').epoch({ type: 'time.line', data: initialDataLight });
+    chartNoise = $('#noise').epoch({ type: 'time.line', data: initialDataNoise });
+    chartMotion = $('#motion').epoch({ type: 'time.line', data: initialDataMotion });
   });
 
   onTick = function() {
     d3.json("/recent/?n=1", function(err, json) {
-      myChart.push([{
+      var t = Date.now();
+      chartTemp.push([{
               y: convert_temp(+json[0].temperature),
-              time: Date.now()
+              time: t
+      }]);
+      chartHum.push([{
+        y: convert_humid(+json[0].humidity),
+        time: t
+      }]);
+      chartLight.push([{
+        y: convert_light(+json[0].light),
+        time: t
+      }]);
+      chartNoise.push([{
+        y: convert_noise(+json[0].sound),
+        time: t
+      }]);
+      chartMotion.push([{
+        y: convert_motion(+json[0].motion),
+        time: t
       }]);
     })
   }
