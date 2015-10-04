@@ -63,7 +63,10 @@
                 return {x: fromUTC(new Date(j.ts)), y: convert_light(j.light)}
             })
         })    
-
+        
+        //console.log(plot)
+        
+        
         var x = d3.time.scale()
             .domain([now - duration, now])
             .range([0, width])
@@ -104,7 +107,7 @@
 
             // Add new values
             //group.data.push(group.value) // Real values arrive at irregular intervals
-            d3.json("../?n=1", function(err, json) {
+            d3.json("../recent/?n=1", function(err, json) {
                 plot.data.push({x: fromUTC(new Date(json[0].ts)), y: convert_light(json[0].light)})
                 plot.path.attr('d', line)
             }) 
