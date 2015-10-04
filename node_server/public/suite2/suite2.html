@@ -156,7 +156,7 @@
                     .transition()
                     .duration(dt)
                     .ease('linear')
-                    .attr('transform', 'translate(' + x(now - duration) + ')')
+                    .attr('transform', 'translate(' + x(now) - x(duration) + ')')
                     .each('end', tick)
 
                 // Remove oldest data point from each group
