@@ -120,8 +120,8 @@ onTick = function() {
     d3.json("/recent/?n=1", function(err, json) {
         var arr = generateMeasurementArray(6);
 
-        arr[2].temperature = +json[0].temperature;
-        arr[2].humidity = +json[0].humidity;
+        arr[2].temperature = convert_temp(+json[0].temperature);
+        arr[2].humidity = convert_humid(+json[0].humidity);
 
         updateSVG(arr);
     })
