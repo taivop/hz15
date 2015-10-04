@@ -1,0 +1,31 @@
+
+@import url(//fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700);
+
+#example1 { min-height: 155px; }
+#example2a { min-height: 153px; }
+#example2b { min-height: 255px; }
+
+svg {
+    border: 5px solid white;
+    padding: 20px;
+    padding-left: 50px;
+    background: #E2DCE4
+}
+
+#sensors {
+    margin: 100 auto;
+    border: 5px solid #DDD;
+    background: #CCC; /* 2A23B; */
+    padding: 20px;
+}
+
+body {
+    background: white;
+}
+
+.tdTitle {
+    text-align: right;
+    font-weight: bold;
+    font-family: "Yanone Kaffeesatz";
+    padding-right: 15px;
+}
