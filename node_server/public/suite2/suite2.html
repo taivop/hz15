@@ -43,6 +43,8 @@
         function formatDate(date) {
             return date.getFullYear() + '-' + (date.getMonth()+1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
         }
+        function toUTC(date) {return date.setHours(date.getHours() - 2);}
+        function fromUTC(date) {return date.setHours(date.getHours() + 2);}
         
         var duration = location.search.split('duration=')[1];
         if (typeof duration == "undefined") {duration = 300000;}
@@ -56,9 +58,9 @@
         var plot = {
             color: 'orange'
         }
-        d3.json("../room_new/?room=data&fromdate=" + formatDate(fromdate) + "&todate=" + formatDate(now), function(err, json) {
+        d3.json("../room_new/?room=data&fromdate=" + formatDate(toUTC(fromdate)) + "&todate=" + formatDate(toUTC(now)), function(err, json) {
             plot.data = json.map(function(j) {
-                return {x: new Date(j.ts), y: convert_light(j.light)}
+                return {x: fromUTC(new Date(j.ts)), y: convert_light(j.light)}
             })
         })    
 
@@ -103,7 +105,7 @@
             // Add new values
             //group.data.push(group.value) // Real values arrive at irregular intervals
             d3.json("../?n=1", function(err, json) {
-                plot.data.push({x: new Date(json[0].ts), y: convert_light(json[0].light)})
+                plot.data.push({x: fromUTC(new Date(json[0].ts)), y: convert_light(json[0].light)})
                 plot.path.attr('d', line)
             }) 
 
