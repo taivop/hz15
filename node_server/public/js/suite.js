@@ -85,7 +85,7 @@
 
 
         // Line does not go out the axis.
-        this.svg.append("defs").append("path")
+        this.svg.append("defs").append("clipPath")
             .attr("id", "clip")
             .append("rect")
             .attr("width", width)
@@ -109,7 +109,7 @@
                   .ticks(5));
 
         this.path = this.svg.append("g")
-            //.attr("clip-path", "url(#clip)")
+            .attr("clip-path", "url(#clip)")
             .attr("stroke","red")
             .attr("stroke-width", "4px")
             .append("path")
@@ -121,6 +121,7 @@
     };
 
     D3ts.prototype.update = function(value) {
+
         var x, that;
 
         this.alreadyInit = this.alreadyInit || false;
@@ -149,9 +150,9 @@
                 .transition()
                 .duration(500)
                 .ease("linear")
-                .attr("transform", "translate(" + x(-1) + ")");
+                .attr("transform", "translate(" + this.x(-1) + ")");
 
-            //this.data.shift();
+            this.data.shift();
             //this.data[0] = 0;
         }
     };
