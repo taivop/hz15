@@ -13,3 +13,20 @@ svg {
     font-size: 2em;
     font-weight: bold;
 }
+
+#topbar {
+    width: 700px;
+    margin: 0 auto;
+}
+
+#topbar h2 {
+    display: inline-block;
+    font-size: 50px;
+    vertical-align: middle;
+}
+
+#topbar img {
+    height: 150px;
+    vertical-align: middle;
+}
+

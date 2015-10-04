@@ -1,0 +1,17 @@
+
+h2 {
+    font-weight: 400;
+    font-size: 35px;
+}
+
+h1, h2 {
+    font-family: "Roboto";
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    background: white;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 0px 100px;
+}
