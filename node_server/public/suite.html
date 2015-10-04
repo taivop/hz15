@@ -13,24 +13,32 @@
 <h2><span class="roomname">Suite</span> Room sensors</h2>
 <table id="values">
   <thead>
+    <th>Noise</th>
+    <th>Motion</th>
     <th>Temperature</th>
     <th>Humidity</th>
     <th>Light</th>
-    <th>Noise</th>
-    <th>Motion</th>
   </thead>
   <tbody>
+    <td><span id="val_noise"></span>dB</td>
+    <td><span id="val_motion"></span></td>
     <td><span id="val_temp"></span>&deg;</td>
     <td><span id="val_humid"></span>%</td>
     <td><span id="val_light"></span>Lux</td>
-    <td><span id="val_noise"></span>dB</td>
-    <td><span id="val_motion"></span></td>
   </tbody>
 </table>
 
 <hr>
 
 <table id="sensors">
+  <tr>
+    <td class="tdTitle">Noise <span class="unit">(dB)</span></td>
+    <td id="noise"></td>
+  </tr>
+  <tr>
+    <td class="tdTitle">Motion <span class="unit">(relative)</span></td>
+    <td id="motion"></td>
+  </tr>
   <tr>
     <td class="tdTitle">Temperature <span class="unit">(&deg;C)</span></td>
     <td id="temperature"></td>
@@ -42,14 +50,6 @@
   <tr>
     <td class="tdTitle">Light <span class="unit">(Lux)</span></td>
     <td id="light"></td>
-</tr>
-  <tr>
-    <td class="tdTitle">Noise <span class="unit">(dB)</span></td>
-    <td id="noise"></td>
-</tr>
-  <tr>
-    <td class="tdTitle">Motion <span class="unit">(relative)</span></td>
-    <td id="motion"></td>
 </tr>
 </table>
 
