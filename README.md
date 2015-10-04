@@ -1,8 +1,6 @@
-## sencis.co
+![sencis.co logo](http://demo.sencis.co/data/logo_notext_small.png)
 
 It is hard to focus in a noisy room, or in an unpleasantly cold one -- work environment has a massive effect on the productivity and happiness of employees. Sencis.co is a platform for tracking and visualising the ambience of rooms using cheap and abundant sensors. 
-
-![sencis.co logo](http://demo.sencis.co/data/logo_notext_small.png)
 
 Features:
 * Visual overview of rooms and real-time data visualisations.
