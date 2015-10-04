@@ -40,13 +40,43 @@
         <script src="../js/sensor.js"></script>
         <script>
         
+        function getJsonFromUrl() {
+            var query = location.search.substr(1);
+            var result = {};
+            query.split("&").forEach(function(part) {
+                var item = part.split("=");
+                result[item[0]] = decodeURIComponent(item[1]);
+            });
+            return result;
+        }
+        urlParams = getJsonFromUrl();
+        if (typeof urlParams.color == "undefined") {urlParams.color = 'black';}
+        if (typeof urlParams.color == "undefined") {urlParams.color = 'black';}
+        if (typeof urlParams.color == "undefined") {urlParams.color = 'black';}
+        
+        var convert = {
+            temp: convert_temp,
+            light: convert_light,
+            humid: conver_humid,
+            motion: convert_motion,
+            sound: convert_noise
+        }
+        
+        var limits = {
+            temp: [10, 30],
+            light: [0, 100],
+            humid: [0, 100],
+            motion: [-1, 1],
+            sound: [60, 125]
+        }
+        
         function formatDate(date) {
             return date.getFullYear() + '-' + (date.getMonth()+1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
         }
         function toUTC(date) {date.setHours(date.getHours() - 2); return date;}
         function fromUTC(date) {date.setHours(date.getHours() + 2); return date;}
         
-        var duration = location.search.split('duration=')[1];
+        var duration = urlParams.duration;
         if (typeof duration == "undefined") {duration = 300000;}
         var dt = duration / 300;
         var now = new Date();
@@ -56,20 +86,16 @@
             height = 200;
         
         var plot = {
-            color: 'orange'
+            color: urlParams.color
         }
         d3.json("../room_new/?room=data&fromdate=" + formatDate(toUTC(fromdate)) + "&todate=" + formatDate(toUTC(now)), function(err, json) {
             plot.data = json.map(function(j) {
-                return {x: fromUTC(new Date(j.ts)), y: convert_light(j.light)}
+                return {x: fromUTC(new Date(j.ts)), y: convert[urlParams.sensor](j[urlParams.sensor])}
             })
-            
-            console.log("1")
-            console.log(plot)
-            
             
             var x = d3.time.scale()
                 .domain([now - duration, now])
-                .range([0, width])
+                .range([50, width+50])
 
             var y = d3.scale.linear()
                 .domain([0, 100])
@@ -86,13 +112,17 @@
 
             var svg = d3.select('.graph').append('svg')
                 .attr('class', 'chart')
-                .attr('width', width)
+                .attr('width', width + 50)
                 .attr('height', height + 50)
 
-            var axis = svg.append('g')
+            var xaxis = svg.append('g')
                 .attr('class', 'x axis')
                 .attr('transform', 'translate(0,' + height + ')')
                 .call(x.axis = d3.svg.axis().scale(x).orient('bottom'))
+                
+            var yaxis = svg.append('g')
+                .attr('class', 'y axis')
+                .call(y.axis = d3.svg.axis().scale(y).orient('left'))
 
             var paths = svg.append('g')
 
@@ -100,31 +130,23 @@
                 .data([plot.data])
                 .style('stroke', plot.color)
                 .style('fill', 'none')
-            
-            console.log("2")
-            console.log(plot)
-            
-            
-            
-            
+           
             function tick() {
                 now = new Date()
 
                 // Add new values
                 //group.data.push(group.value) // Real values arrive at irregular intervals
                 d3.json("../recent/?n=1", function(err, json) {
-                    plot.data.push({x: fromUTC(new Date(json[0].ts)), y: convert_light(json[0].light)})
+                    plot.data.push({x: fromUTC(new Date(json[0].ts)), y: convert[urlParams.sensor](json[0][urlParams.sensor])})
                     plot.path.attr('d', line)
                 }) 
                 
-                console.log("3")
-                console.log(plot)
                 
                 // Shift domain
                 x.domain([now - duration, now])
 
                 // Slide x-axis left
-                axis.transition()
+                xaxis.transition()
                     .duration(dt)
                     .ease('linear')
                     .call(x.axis)
@@ -139,9 +161,6 @@
 
                 // Remove oldest data point from each group
                 plot.data.shift()
-                
-                console.log("4")
-                console.log(plot)
                 
             }
 
