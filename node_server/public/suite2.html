@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Suite live sensor data - sencis.co</title>
+  <link rel="stylesheet" type="text/css" href="css/common.css"/>
+  <link rel="stylesheet" type="text/css" href="css/style.css"/>
+  <link rel="stylesheet" type="text/css" href="css/suite.css"/>
+  <link rel="stylesheet" type="text/css" href="css/epoch.min.css"/>
+</head>
+
+
+<body>
+
+<script src="js/jquery-2.1.4.js"></script>
+<script src="js/d3.js"></script>
+<script src="js/epoch.min.js"></script>
+<!--<script src="js/sensor.js"></script>-->
+
+<div id="taivo-container" style="height: 100px;">
+
+</div>
+
+
+<h2><span class="roomname">Suite</span> Room sensors</h2>
+<table id="values">
+  <thead>
+    <th>Temperature</th>
+    <th>Humidity</th>
+    <th>Light</th>
+    <th>Noise</th>
+    <th>Motion</th>
+  </thead>
+  <tbody>
+    <td><span id="val_temp"></span>&deg;</td>
+    <td><span id="val_humid"></span>%</td>
+    <td><span id="val_light"></span>Lux</td>
+    <td><span id="val_noise"></span>dB</td>
+    <td><span id="val_motion"></span></td>
+  </tbody>
+</table>
+
+<hr>
+
+<table id="sensors">
+  <tr>
+    <td class="tdTitle">Temperature</td>
+    <td id="temperature" class="chartArea"></td>
+  </tr>
+  <tr>
+    <td class="tdTitle">Humidity</td>
+    <td id="humidity"></td>
+</tr>
+  <tr>
+    <td class="tdTitle">Light</td>
+    <td id="light"></td>
+</tr>
+  <tr>
+    <td class="tdTitle">Noise</td>
+    <td id="noise"></td>
+</tr>
+  <tr>
+    <td class="tdTitle">Motion</td>
+    <td id="motion"></td>
+</tr>
+</table>
+
+<script type="text/javascript">
+  var initialData = [
+    // First series
+    {
+      label: "Series 1",
+      values: [ {time: 1370044800, y: 100}, {time: 1370044801, y: 1000}]
+  }];
+
+  jQuery(document).ready(function ($) {
+    myChart = $('#temperature').epoch({ type: 'time.line', data: initialData });
+  });
+
+  onTick = function() {
+    d3.json("/recent/?n=1", function(err, json) {
+      myChart.push([{
+              y: +json[0].temperature,
+              time: new Date(json[0].ts)
+      }]);
+    })
+  }
+
+  window.aa = setInterval(onTick, 1000);
+
+</script>
+
+</body>
+
+</html>

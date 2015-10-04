@@ -16,7 +16,7 @@
         top: 0,
         right: 0,
         bottom: 0,
-        left: 30
+        left: 40
     };
 
     D3ts.defaults.domain = {

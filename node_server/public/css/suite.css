@@ -43,3 +43,8 @@ table#values {
 #values td {
     text-align: center;
 }
+
+td.chartArea {
+    width: 500px;
+    height: 100px;
+}
